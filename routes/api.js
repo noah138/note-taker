@@ -5,6 +5,14 @@ const database = require('../db/db.json')
 
 let userID = database.length
 
+// rewrites the JSON file
+function reWrite() {
+    fs.writeFileSync(
+        path.join(__dirname, "../db/db.json"),
+        JSON.stringify(database));
+        res.json(database);
+}
+
 module.exports = (app) => {
     // GET /api/notes reads the db.json file and returns all saved notes as JSON
     app.get('/api/notes', (req,res)=>{
@@ -17,14 +25,9 @@ module.exports = (app) => {
         // ID is saved as its position in the JSON, increases by one each time note is stored
         newNote['id'] = userID + 1;
         userID++;
-
-        console.log(newNote);
         
         database.push(newNote);
-        fs.writeFileSync(
-            path.join(__dirname, "../db/db.json"),
-            JSON.stringify(database));
-            res.json(database);
+        reWrite();
     });
 
     // note deleting function
@@ -36,8 +39,6 @@ module.exports = (app) => {
                 break;
             }
         }
-        // rewrites the json file
-        fs.writeFileSync(path.join(__dirname, "../db/db.json"), JSON.stringify(database));
-        res.json(database);
+        reWrite();
     });
 }
