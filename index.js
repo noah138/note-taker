@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes to created route files
-require('./routes/api');
-require('./routes/html');
+require('./routes/api')(app);
+require('./routes/html')(app);
 
 // starts the server
 app.listen(PORT, () => {
