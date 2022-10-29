@@ -12,9 +12,7 @@ module.exports = (app) => {
     })
     // POST /api/notes receives a new note to save on the request body, add it to the db.json file, and then return the new note to the client.
     app.post('/api/notes', (req,res)=>{
-        let database = fs.readFileSync('../db/db.json');
-        database = JSON.parse(database);
-        res.json(database);
+        let database = require('../db/db.json');
 
         let newNote = req.body;
 
@@ -22,20 +20,25 @@ module.exports = (app) => {
         newNote['id'] = userID + 1;
         userID++;
 
+        console.log(newNote);
+        
         database.push(newNote);
-        fs.writeFileSync('../db/db.json', JSON.stringify(database));
-        res.json(database);
+        fs.writeFileSync(
+            path.join(__dirname, "../db/db.json"),
+            JSON.stringify(database));
+            res.json(database);
     })
     // delete button functionality removes the note by filtering by id
     app.delete('/api/notes/:id', (req,res)=>{
         // reads notes from json file
-        let database = JSON.parse(fs.readFileSync('../db/db.json'))
+        let database = JSON.parse(fs.readFileSync('db/db.json'))
 
         // removes the note by filtering by id
         let notesLeft = database.filter(item => item.id !== req.params.id);
 
         // rewrites the notes minus the deleted note to the json file
-        fs.writeFileSync('../db/db.json', JSON.stringify(notesLeft));
+        fs.writeFileSync('db/db.json', JSON.stringify(notesLeft));
+        res.json(notesLeft);
     })
 }
 
